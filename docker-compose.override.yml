@@ -7,11 +7,22 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin1234
       - POSTGRES_DB=AuctionDb
-    restart: always
+    restart: unless-stopped
     ports:
         - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+
+  searchdb:
+    container_name: searchdb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=mongopw
+    restart: unless-stopped
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/var/lib/mongodb/data
 
   auctionservice:
     environment:
