@@ -13,6 +13,15 @@ services:
       context: .
       dockerfile: src/AuctionService/Dockerfile
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine   
+
+
+  searchservice:
+    image: ${DOCKER_REGISTRY-}searchservice
+    build:
+      context: .
+      dockerfile: src/SearchService/Dockerfile
 
 volumes:
   postgres_data:

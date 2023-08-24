@@ -31,6 +31,17 @@ services:
       - "80"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+ 
+  rabbitmq:
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+        - "5672:5672"
+        - "15672:15672"
 
-
+  searchservice:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
 

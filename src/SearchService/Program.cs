@@ -6,6 +6,8 @@ using SearchService.Data;
 using SearchService.Models;
 using SearchService.Services;
 using System.Net;
+using MassTransit;
+using SearchService.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +18,27 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// add automapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 // add http client
 builder.Services.AddHttpClient<AuctionServiceHttpClient>().AddPolicyHandler(GetPolicy());
+
+// add mass transit
+builder.Services.AddMassTransit(x =>
+{
+    // add the consumers
+    x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
+
+    // name formater
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
+
+    // add the rabbit mq host
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 var app = builder.Build();
 
