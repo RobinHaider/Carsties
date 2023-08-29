@@ -1,6 +1,13 @@
 version: '3.4'
 
 services:
+  rabbitmq:
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+        - "5672:5672"
+        - "15672:15672"
+
   auctiondb:
     container_name: auctiondb
     environment:
@@ -28,20 +35,17 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "80"
+      - 7001:80
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
- 
-  rabbitmq:
-    container_name: rabbitmq
-    restart: unless-stopped
-    ports:
-        - "5672:5672"
-        - "15672:15672"
 
   searchservice:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "80"
+      - 7002:80
+ 
+
+
+
 
