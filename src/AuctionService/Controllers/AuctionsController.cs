@@ -65,13 +65,17 @@ public class AuctionsController : ControllerBase
         auction.Seller = "user";
 
         _context.Auctions.Add(auction);
-        await _context.SaveChangesAsync();
 
+        // new auctiondto
         var newAuction = _mapper.Map<AuctionDto>(auction);
 
+        // auction created dto
         var auctionCreated = _mapper.Map<AuctionCreated>(newAuction);
 
+        // publish to service bus
         await _publishEndpoint.Publish(auctionCreated);
+
+        await _context.SaveChangesAsync();        
 
         return CreatedAtAction(nameof(GetAuction), new { id = auction.Id }, newAuction);
     }
